@@ -67,29 +67,35 @@ namespace EnterprisePatterns.Api.Controllers
             {
                 uowStatus = _unitOfWork.BeginTransaction();
 
-                Customer customer = new Customer();
-                customer.OrganizationName = signUpDto.OrganizationName;
+                Customer customer = new Customer
+                {
+                    OrganizationName = signUpDto.OrganizationName
+                };
                 notification = customer.validateForSave();
 
                 if(notification.hasErrors())
                 {
-                    return StatusCode(StatusCodes.Status400BadRequest, notification.ToString());
+                    return StatusCode(StatusCodes.Status400BadRequest, notification.errorMessage());
                 }
 
                 _customerRepository.Create(customer);
 
-                User user = new User();
-                user.Username = signUpDto.Username;
-                user.Password = signUpDto.Password;
-                user.RoleId = (long) Role.Owner;
-                user.Customer = customer;
+                User user = new User
+                {
+                    Username = signUpDto.Username,
+                    Password = signUpDto.Password,
+                    RoleId = (long)Role.Owner,
+                    Customer = customer
+                };
                 _userRepository.Create(user);
 
-                Project project = new Project();
-                project.ProjectName = signUpDto.ProjectName;
-                project.Customer = customer;
-                project.Budget = signUpDto.Budget;
-                project.CurrencyId = (long) Currency.EUR;
+                Project project = new Project
+                {
+                    ProjectName = signUpDto.ProjectName,
+                    Customer = customer,
+                    Budget = signUpDto.Budget,
+                    CurrencyId = (long)Currency.EUR
+                };
                 _projectRepository.Create(project);
 
                 _unitOfWork.Commit(uowStatus);

@@ -22,7 +22,7 @@ namespace EnterprisePatterns.Api.Customers
 
             if (this == null)
             {
-                notification.addError("The student is null");
+                notification.addError("The customer is null");
             }
 
             if (!this.hasFullName())
